@@ -1,0 +1,20 @@
+def pomLocation = "smoke-test-parent"
+def targetLocation = "smoke-test-parent/smoke-test/target"
+def testTargetLocation = "smoke-test-parent/smoke-test/target"
+
+
+node {
+
+    stage('Checkout') {
+        checkout scm
+    }
+
+    stage('Run QA SmokeTests') {
+
+            try {
+                sh "mvn -B -V -U -e -f " + pomLocation + "/pom.xml clean install"
+            } finally {
+                junit targetLocation + '/surefire-reports/*.xml,' + testTargetLocation + '/failsafe-reports/*.xml'
+            }
+        }
+}
